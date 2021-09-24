@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>五子棋</title>
+		<link rel="stylesheet" type="text/css" href="style.css" />
+	</head>
+	<body>
+		<h3 class="title" align="center">----五子棋----</h3>
+		
+			
+			
+			
+			<div class="left">
+				<canvas class="chess" width="450px" height="450px"> </canvas>
+			</div>
+			
+			<div  class="score">
+				  
+				  <table  border="0" bgcolor="#B9B9B9" width="150" height="100">
+				  <tr>
+					  	<td>计数器</td>
+				  </tr>
+				  <table border="1" bgcolor="#B9B9B9" width="150" height="450">
+				  
+				  <tr>
+						<td>玩家分数：<p class="player_score">0</p></td>
+				  </tr>
+				  <tr>
+						<td>计算机分数：<p class="AI_score">0</p></td>
+				  </tr>
+				 
+				  </table>
+				  <table>
+					<tr>
+						<td><button id="gz">游戏规则</button>	</td>
+					</tr>			
+					<tr>
+						<td><button id="lx">联系我们</button>	</td>
+					</tr>	
+				 </table>
+			</div>
+			
+			
+			<div>
+				<a class="restart" onclick="rst()">重新开始</a>
+			</div>
+			
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<!-- --------------------------------------js部分---------------------------------------------------------------------------->
+		
+		<script>
+			var chess = document.getElementsByClassName("chess")[0];	 
+			var context = chess.getContext("2d");		//拿到的是2d
+			var title = document.getElementsByClassName("title")[0];
+			context.strokeStyle="#B9B9B9"		//绘制表格线的颜色
+			
+			window.onload=function(){		
+				drawChessBorad();			
+			}
+			
+			
+			
+			
+			
+			function drawChessBorad(){
+				
+				for(var i=0;i<15;i++){
+					//横线
+					context.moveTo(15,15+i*30);
+					
+					context.lineTo(435,15+i*30);
+					
+					context.stroke();
+					//竖线
+					context.moveTo(15+i*30,15);
+					
+					context.lineTo(15+i*30,435);
+					
+					context.stroke();
+				}
+			}
+			
+			var wins=[];		//赢法数组
+			for(var i=0;i<15;i++){
+				wins[i]=[];
+				for(var j=0;j<15;j++){
+					wins[i][j]=[];
+				}
+			}
+			
+			//横线赢法
+			var count=0;
+			for(var i=0;i<15;i++){
+				for(var j=0;j<11;j++){
+					for(var k=0;k<5;k++){
+						wins[j+k][i][count]=true;
+					}
+					count++;
+				}					
+				
+			}
+			
+			//竖线赢法
+			for(var i=0;i<15;i++){
+				for(var j=0;j<11;j++){
+					for(var k=0;k<5;k++){
+						wins[i][j+k][count]=true;
+					}
+					count++;
+				}
+				
+			}
+			//正斜线赢法
+			for(var i=0;i<11;i++){
+				for(var j=0;j<11;j++){
+					for(var k=0;k<5;k++){
+						wins[i+k][j+k][count]=true;
+					}
+					count++;
+				}
+			}
+			
+			//反斜线赢法
+			for(var i=0;i<11;i++){
+				for(var j=14;j>3;j--){
+					for(var k=0;k<5;k++){
+						wins[i+k][j-k][count]=true;
+					}
+					count++;
+				}
+			}
+			
+			
+			var chessboard=[];
+			for(var i=0;i<15;i++){
+				chessboard[i]=[];
+				for(var j=0;j<15;j++){
+					chessboard[i][j]=0;
+				}
+			}
+			
+			//下棋
+			var me=true;
+			var over =false;
+			
+			var myWin=[];		//记录用户分数
+			var computerWin=[]; //计算机分数
+			for(var i=0;i<count;i++){
+				myWin[i]=0;
+				computerWin[i]=0;
+			}
+			
+			chess.onclick=function(e){
+				
+				if(over){
+					return;
+				}
+				//人可不可以下棋
+				if(!me){
+					return;
+				}
+				
+				var x=e.offsetX;
+				
+				var y=e.offsetY;
+				
+				var i = Math.floor(x/30);
+				var j = Math.floor(y/30);
+				
+				if(chessboard[i][j]==0){
+					
+					onestep(i,j,me);
+					
+					
+					chessboard[i][j]=1;
+					
+					
+					//player赢
+					var player_socre = document.getElementsByClassName("player_score")[0];
+					
+					
+					
+					
+					
+					//判断玩家palyer赢了
+					for(var k=0;k<count;k++){
+						if(wins[i][j][k]){
+							
+							myWin[k]++;
+							
+							if(myWin[k]==5){
+								title.innerHTML="赢了";
+								player_socre.innerHTML++;
+								over=true;
+							}
+						}
+					}
+				}
+				if(!over){
+					me=!me;
+					
+					//计算机下棋
+					computerAI();
+				}
+			}
+			
+			function computerAI(){
+				
+				var myScore=[];
+				
+				var computerScore=[];
+				
+				for(var i=0;i<15;i++){
+					myScore[i]=[];
+					computerScore[i]=[];
+					
+					for(var j=0;j<15;j++){
+						myScore[i][j]=0;
+						computerScore[i][j]=0;
+					}
+				}
+				
+				var max=0;
+				var x=0,y=0;	
+				
+				for(var i=0;i<15;i++){
+					
+					for(var j=0;j<15;j++){
+						//判断空白处
+						if(chessboard[i][j]==0){
+							
+							for(var k=0;k<count;k++){
+								if(wins[i][j][k]){
+									if(myWin[k]==1){
+										myScore[i][j]+=200;
+									}else if(myWin[k]==2){
+										myScore[i][j]+=400;
+									}else if(myWin[k]==3){
+										myScore[i][j]+=1000;
+									}else if(myWin[k]==4){
+										myScore[i][j]+=2000;
+									}
+									if(computerWin[k]==1){
+										computerScore[i][j]+=220;
+									}else if(computerWin[k]==2){
+										computerScore[i][j]+=420;
+									}else if(computerWin[k]==3){
+										computerScore[i][j]+=1020;
+									}else if(computerWin[k]==4){
+										computerScore[i][j]+=10000;
+									}
+								}
+							}
+							
+							//判断最大赢法
+							if(myScore[i][j]>max){
+								max=myScore[i][j];
+								x=i;
+								y=j;
+							}else if(myScore[i][j]==max){
+								if(computerScore[i][j]>max){
+									max=computerScore[i][j];
+									x=i;
+									y=j;
+								}
+							}
+							
+							if(computerScore[i][j]>max){
+								max=computerScore[i][j];
+								x=i;
+								y=j;
+							}else if(computerScore[i][j]==max){
+								if(myScore[i][j]>max){
+									x=i;
+									j=j;
+								}
+							}
+							
+							
+						}
+					}
+				}
+				
+				onestep(x,y,me);
+				chessboard[x][y]=1;
+				
+				//AI赢
+				var AI_socre = document.getElementsByClassName("AI_score")[0];
+				
+				
+				
+				
+				
+				
+				//判断计算机是否赢
+				for(var k=0;k<count;k++){
+					if(wins[x][y][k]){
+						computerWin[k]+=1;
+						if(computerWin[k]==5){
+							title.innerHTML="计算机赢了";
+							AI_socre.innerHTML++;
+							over=true;
+						}
+					}
+					
+				}
+				
+				if(!over){
+					me=!me;
+				}
+				
+			}
+			
+			
+			
+			//落子的方法
+			function onestep(i,j,me){
+				
+				context.beginPath();
+				
+				
+				context.arc(15+i*30,15+j*30,13,0,2*Math.PI);
+				
+				context.closePath();
+				
+				
+				var color;
+				if(me){
+					color="black";
+				}else{
+					color="red";
+				}
+				
+				context.fillStyle=color;
+				context.fill();
+			}
+			
+			function rst(){
+				window.location.reload();
+			}
+			
+			
+			var lx = document.getElementById("lx");
+			lx.addEventListener('click',function(){
+				alert("作者qq");							
+			},false)
+			
+			var gz = document.getElementById("gz");
+			gz.addEventListener('click',function(){
+				alert("规则");
+				alert("1.双方各执一色棋子");
+				alert("2.空棋盘开局");
+				alert("3.黑先、白后，交替下子，每次只能下一子。");
+				alert("4.棋子下在棋盘的空白点上，棋子下定后，不得向其它点移动，不得从棋盘上拿掉或拿起另落别处。");
+				
+			},false)
+			
+			
+			
+			
+			
+			
+		</script>
+	</body>
+</html>
