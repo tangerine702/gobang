@@ -1,37 +1,18 @@
-## Welcome to GitHub Pages
+## Welcome to My Project
+## 欢迎你来到我的项目
 
-You can use the [editor on GitHub](https://github.com/tangerine702/gobang/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
+这是我用H5和JavaScript做的一个小项目，虽然没怎么接触过js，但是学还是会学的🤭
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+源代码中我就简单的把HTML和JavaScript写成了一个文件，
+而大体的布局CSS还是独立出了一个文件进行修改（小部分细节的CSS我就直接写在标签里了）
 
-### Markdown
+整体的代码细节我一并写成了注释，基本可以看得懂:)
+反正我已经不太看得懂了:(
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+大体的代码思路我先在这里记录一下（以防我忘掉🤣）
+1. 首先在HTML中写出大概的内容[标题，H5用的canvas标签，和计数器的表格]
+2. 每个标签里面给它们一个class或id值，以便后面JavaScript调用
+3. 接下来就是CSS布局：基本就是div套盒子，两个div盒子并排排列，一个放棋盘，一个放计数器，游戏规则和联系我们
+4. JavaScript用三维数组定位棋盘上的每一个点，由鼠标点击生成棋子，写出全部算法组成数组，由每个赢法上存在多少相同颜色的子来判断分数进而判断胜利
 
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/tangerine702/gobang/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+。。。。
